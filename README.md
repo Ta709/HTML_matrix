@@ -1,65 +1,73 @@
-How to Create a Matrix-Style Web Console
+## How to Create a Matrix-Style Web Console
+
 This guide provides instructions for creating a web-based simulation of a Matrix-style console, featuring the "Wake up, Neo." messages with a typing animation, followed by a digital rain effect with various international characters.
 
-Step 1: Create the HTML File
+### Step 1: Create the HTML File
+
 You will create a single HTML file that contains all the necessary HTML structure, CSS styling, and JavaScript logic.
 
-Open a plain text editor (like Notepad on Windows, TextEdit on Mac, or VS Code/Sublime Text on any OS).
+1. **Open a plain text editor** (like Notepad on Windows, TextEdit on Mac, or VS Code/Sublime Text on any OS).
 
-Save the empty file as matrix_console.html (or any .html name you prefer). Make sure the file extension is .html.
+2. **Save the empty file** as `matrix_console.html` (or any `.html` name you prefer). Make sure the file extension is `.html`.
 
-Step 2: Paste the Code
-Copy the entire code block (HTML, CSS, and JavaScript) and paste it into your matrix_console.html file.
+### Step 2: Paste the Code
 
-Step 3: Save the File
-After pasting the code, save the file (e.g., by pressing Ctrl+S or going to File > Save in your text editor).
+**Copy the entire code block** (HTML, CSS, and JavaScript) from the provided source and **paste it into your `matrix_console.html` file.**
 
-Step 4: Open in a Web Browser
-Navigate to the directory where you saved matrix_console.html. Double-click the file, and it will open in your default web browser.
+### Step 3: Save the File
 
-You will see the "Wake up, Neo." messages appear with a typing animation, followed by the Matrix digital rain effect.
+After pasting the code, **save the file** (e.g., by pressing `Ctrl+S` or going to File > Save in your text editor).
 
-Code Explanation
-HTML Structure:
+### Step 4: Open in a Web Browser
 
-A div with id="terminal-container" acts as the main visual frame for the console.
+**Navigate to the directory** where you saved `matrix_console.html`. **Double-click the file**, and it will open in your default web browser.
 
-A <pre> tag with id="output" is used to display the typing messages, preserving whitespace and line breaks.
+You will then see the "Wake up, Neo." messages appear with a typing animation, followed by the Matrix digital rain effect.
 
-A <canvas> element with id="matrix-canvas" is used to draw the dynamic digital rain effect.
+### Code Explanation
 
-CSS Styling (within <style> tags and Tailwind CSS):
+This section breaks down the key components of the web console's code.
 
-Sets a black background for the body and the terminal container.
+#### HTML Structure:
 
-Uses a monospace font for a terminal aesthetic.
+* A `div` with `id="terminal-container"` acts as the **main visual frame** for the console.
 
-Applies green text color and a subtle green glow to the terminal container.
+* A `<pre>` tag with `id="output"` is used to **display the typing messages**, preserving whitespace and line breaks.
 
-Ensures the layout is responsive and centered.
+* A `<canvas>` element with `id="matrix-canvas"` is used to **draw the dynamic digital rain effect**.
 
-The matrix-canvas is initially hidden and becomes visible when the digital rain starts.
+#### CSS Styling (within `<style>` tags and Tailwind CSS):
 
-JavaScript Logic (within <script> tags):
+* Sets a **black background** for the body and the terminal container.
 
-typeText(text, charDelay): An asynchronous function that simulates typing by adding one character at a time to the outputElement with a small delay (charDelay).
+* Uses a **monospace font** for a terminal aesthetic.
 
-clearScreen(): Clears the text content of the outputElement.
+* Applies **green text color** and a subtle **green glow** to the terminal container.
 
-chars variable: Contains a wide array of characters, including English, Japanese Katakana, Korean Hangul, and Chinese characters, for the digital rain.
+* Ensures the layout is **responsive and centered**.
 
-initializeMatrixCanvas(): Sets up the canvas dimensions based on its container, calculates the number of columns, and initializes the drops array (which tracks the vertical position of each falling character). It also handles resizing.
+* The `matrix-canvas` is initially hidden and becomes **visible when the digital rain starts**.
 
-drawMatrixRain(): This is the core of the Matrix effect. It draws a semi-transparent black rectangle to create the "fading" trail effect, then draws random characters in green at the calculated positions. It also determines when a "drop" should restart from the top.
+#### JavaScript Logic (within `<script>` tags):
 
-startAnimation(): This asynchronous function orchestrates the entire sequence:
+* **`typeText(text, charDelay)`:** An asynchronous function that simulates typing by adding one character at a time to the `outputElement` with a small delay (`charDelay`).
 
-It calls typeText for each "Wake up, Neo." message, with a 1-second pause and screen clear in between.
+* **`clearScreen()`:** Clears the text content of the `outputElement`.
 
-After the messages, it hides the text output (outputElement) and displays the canvas (matrix-canvas).
+* **`chars` variable:** Contains a wide array of characters, including **English, Japanese Katakana, Korean Hangul, and Chinese characters**, for the digital rain.
 
-It initializes the canvas and sets up a resize event listener.
+* **`initializeMatrixCanvas()`:** Sets up the canvas dimensions based on its container, calculates the number of columns, and initializes the `drops` array (which tracks the vertical position of each falling character). It also handles resizing.
 
-It starts the animateMatrix loop using requestAnimationFrame for smooth animation.
+* **`drawMatrixRain()`:** This is the core of the Matrix effect. It draws a semi-transparent black rectangle to create the "fading" trail effect, then draws random characters in green at the calculated positions. It also determines when a "drop` should restart from the top.
 
-DOMContentLoaded event listener: Ensures that the startAnimation function runs only after the entire HTML document has been loaded and parsed.
+* **`startAnimation()`:** This asynchronous function orchestrates the entire sequence:
+
+  1. It calls `typeText` for each "Wake up, Neo." message, with a 1-second pause and screen clear in between.
+
+  2. After the messages, it hides the text output (`outputElement`) and displays the canvas (`matrix-canvas`).
+
+  3. It initializes the canvas and sets up a `resize` event listener.
+
+  4. It starts the `animateMatrix` loop using `requestAnimationFrame` for smooth animation.
+
+* **`DOMContentLoaded` event listener:** Ensures that the `startAnimation` function runs only after the entire HTML document has been loaded and parsed.
