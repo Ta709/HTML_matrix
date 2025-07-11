@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Console</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the terminal feel */
+        body {
+            background-color: #000; /* Black background */
+            font-family: 'Inter', monospace; /* Monospace font for terminal look */
+            overflow: hidden; /* Prevent scrollbars */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+        }
+
+        #terminal-container {
+            width: 90%; /* Responsive width */
+            max-width: 800px; /* Max width for larger screens */
+            height: 70vh; /* Fixed height for terminal area */
+            background-color: #000; /* Ensure container is black */
+            color: #0F0; /* Default green text */
+            padding: 1rem;
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Green glow effect */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to top */
+            position: relative; /* For canvas positioning */
+        }
+
+        #output {
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+            word-break: break-all; /* Break long words */
+            flex-grow: 1; /* Allow output to take available space */
+            overflow-y: auto; /* Enable scrolling if content overflows */
+            color: #0F0; /* Green text for output */
+            font-weight: bold; /* Bold text */
+            font-size: clamp(0.8rem, 2vw, 1.2rem); /* Responsive font size */
+        }
+
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden by default, shown when matrix starts */
+            background-color: #000; /* Ensure canvas background is black */
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal-container" class="flex flex-col justify-start items-start">
+        <pre id="output"></pre>
+        <canvas id="matrix-canvas"></canvas>
+    </div>
+
+    <script>
+        const outputElement = document.getElementById('output');
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // ANSI escape codes (for reference, not directly used in HTML output)
+        const GREEN = '\x1b[32m';
+        const BOLD = '\x1b[1m';
+        const NC = '\x1b[0m'; // No Color
+
+        // Function to simulate typing text with a delay
+        function typeText(text, charDelay = 50) {
+            return new Promise(resolve => {
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        outputElement.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, charDelay);
+                    } else {
+                        outputElement.textContent += '\n'; // Add a newline after each message
+                        resolve();
+                    }
+                }
+                type();
+            });
+        }
+
+        // Function to clear the terminal screen
+        function clearScreen() {
+            outputElement.textContent = '';
+        }
+
+        // Matrix rain effect variables
+        const font_size = 16;
+        let columns;
+        let drops = [];
+        // Added Chinese, Japanese, and Korean characters for more variety
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`' +
+                      '日ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾝｲﾄﾘﾁﾂｼｬｱｸｹｺｻｽｾｿﾀﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ' + // Japanese Katakana
+                      'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㄲㄸㅃㅆㅉㅐㅔㅚㅟㅢㅘㅝㅙㅞ' + // Korean Hangul (some common jamo)
+                      '你好世界和平友谊发展进步中国日本韩国文字符号数字'; // Chinese (simplified, common characters)
+
+
+        // Function to initialize or resize the canvas for matrix rain
+        function initializeMatrixCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            columns = canvas.width / font_size;
+
+            drops = [];
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1; // Start each column at the top
+            }
+
+            ctx.fillStyle = '#000'; // Black background
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Function to draw the matrix rain
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Fading effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // Green text
+            ctx.font = `${font_size}px monospace`; // Ensure monospace font for consistent character width
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+                // Send the drop back to the top randomly after it reaches the bottom
+                if (drops[i] * font_size > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                // Increment y-coordinate for the drop
+                drops[i]++;
+            }
+        }
+
+        // Main animation sequence
+        async function startAnimation() {
+            clearScreen();
+
+            await typeText("Wake up, Neo.");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            clearScreen();
+
+            await typeText("The Matrix has you.");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            clearScreen();
+
+            await typeText("Follow the white rabbit.");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            clearScreen();
+
+            await typeText("Knock, knock, Neo.");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            clearScreen();
+
+            // Hide text output and show canvas for matrix rain
+            outputElement.style.display = 'none';
+            canvas.style.display = 'block';
+
+            initializeMatrixCanvas(); // Initialize canvas dimensions and drops
+            window.addEventListener('resize', initializeMatrixCanvas); // Re-initialize on resize
+
+            // Start the matrix rain animation loop
+            function animateMatrix() {
+                drawMatrixRain();
+                requestAnimationFrame(animateMatrix);
+            }
+            animateMatrix();
+        }
+
+        // Start the animation when the page loads
+        document.addEventListener('DOMContentLoaded', startAnimation);
+    </script>
+</body>
+</html>
